@@ -9,10 +9,9 @@ mensagemEl.addEventListener('input', () => {
 });
 
 function setErro(id, msg) {
-  document.getElementById('campo-' + id)?.classList[msg ? 'add' : 'remove']('invalido');
+  document.getElementById('campo-' + id).classList[msg ? 'add' : 'remove']('invalido');
   document.getElementById('erro-' + id).textContent = msg;
 }
-
 
 function validar() {
   const nome     = document.getElementById('nome').value.trim();
@@ -21,35 +20,30 @@ function validar() {
   const mensagem = mensagemEl.value.trim();
   let ok = true;
 
-
   if (!nome) {
     setErro('nome', 'O nome é obrigatório.'); ok = false;
   } else if (!/^[A-Za-zÀ-ÿ\s]+$/.test(nome)) {
     setErro('nome', 'O nome deve conter apenas letras.'); ok = false;
   } else setErro('nome', '');
 
-
   if (!email) {
     setErro('email', 'O e-mail é obrigatório.'); ok = false;
   } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-    setErro('email', 'Informe um e-mail válido (ex: usuario@dominio.com).'); ok = false;
+    setErro('email', 'Informe um e-mail válido.'); ok = false;
   } else setErro('email', '');
 
   if (!senha) {
     setErro('senha', 'A senha é obrigatória.'); ok = false;
   } else if (senha.length < 6) {
-    setErro('senha', 'A senha deve ter pelo menos 6 caracteres.'); ok = false;
+    setErro('senha', 'Mínimo 6 caracteres.'); ok = false;
   } else setErro('senha', '');
 
   if (!mensagem) {
     setErro('mensagem', 'A mensagem é obrigatória.'); ok = false;
-  } else if (mensagem.length > 250) {
-    setErro('mensagem', 'A mensagem não pode ter mais de 250 caracteres.'); ok = false;
   } else setErro('mensagem', '');
 
   return ok;
 }
-
 
 form.addEventListener('submit', async (e) => {
   e.preventDefault();
@@ -58,7 +52,7 @@ form.addEventListener('submit', async (e) => {
   const dados = new FormData(form);
 
   try {
-    const res  = await fetch('submit.php', { method: 'POST', body: dados });
+    const res  = await fetch('php/submit.php', { method: 'POST', body: dados });
     const json = await res.json();
 
     if (json.success) {
