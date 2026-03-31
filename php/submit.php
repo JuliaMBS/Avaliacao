@@ -46,3 +46,4 @@ try {
     $msg = $e->getCode() === '23000' ? 'E-mail já cadastrado.' : 'Erro ao salvar.';
     resposta(false, $msg);
 }
+?>
