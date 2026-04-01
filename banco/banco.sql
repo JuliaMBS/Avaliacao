@@ -1,0 +1,11 @@
+CREATE DATABASE IF NOT EXISTS cadastro_db CHARACTER SET utf8mb4;
+
+USE cadastro_db;
+
+CREATE TABLE IF NOT EXISTS usuarios (
+    id        INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    nome      VARCHAR(150) NOT NULL,
+    email     VARCHAR(255) NOT NULL UNIQUE,
+    senha     VARCHAR(255) NOT NULL,
+    mensagem  VARCHAR(250) NOT NULL
+);
