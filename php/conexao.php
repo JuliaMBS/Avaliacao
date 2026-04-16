@@ -1,17 +1,15 @@
 <?php
+header('Content-Type: application/json; charset=utf-8');
+
 $host = "localhost";
 $db = "cadastro_db";
 $user = "root";
-$pass = "root";
+$pass = "moaby.root";
 
 try {
     $conexao = new PDO("mysql:host=$host;dbname=$db;charset=utf8", $user, $pass);
-    
-    // Configura para mostrar erros
     $conexao->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-
-    echo "Conectado com sucesso!";
 } catch (PDOException $e) {
-    echo "Erro na conexão: " . $e->getMessage();
+    echo json_encode(['success'=>false,'message'=>'Erro na conexão']);
+    exit;
 }
-?>
