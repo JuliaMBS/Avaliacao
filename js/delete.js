@@ -1,72 +1,73 @@
- let modoAtivo = 'email';
+let modo = "email";
 
-    function setTab(modo, btn) {
-      modoAtivo = modo;
-      document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-      btn.classList.add('active');
-      document.getElementById('tab-email').style.display = modo === 'email' ? '' : 'none';
-      document.getElementById('tab-id').style.display   = modo === 'id'    ? '' : 'none';
-      esconderFeedback();
-    }
+// trocar abas
+function setTab(tipo, el) {
+    modo = tipo;
 
-    function esconderFeedback() {
-      const f = document.getElementById('feedback');
-      f.className = 'feedback';
-      f.textContent = '';
-    }
+    document.getElementById("tab-email").style.display = tipo === "email" ? "block" : "none";
+    document.getElementById("tab-id").style.display = tipo === "id" ? "block" : "none";
 
-    function pedirConfirmacao() {
-      esconderFeedback();
-      const val = modoAtivo === 'email'
-        ? document.getElementById('inp-email').value.trim()
-        : document.getElementById('inp-id').value.trim();
+    document.querySelectorAll(".tab").forEach(btn => btn.classList.remove("active"));
+    el.classList.add("active");
+}
 
-      if (!val) {
-        mostrarFeedback(false, modoAtivo === 'email' ? 'Informe um e-mail.' : 'Informe um ID.');
-        return;
-      }
-      if (modoAtivo === 'email' && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val)) {
-        mostrarFeedback(false, 'E-mail inválido.');
-        return;
-      }
+// abrir confirmação
+function pedirConfirmacao() {
+    document.getElementById("confirm-overlay").style.display = "flex";
+}
 
-      document.getElementById('confirm-msg').textContent =
-        `Tem certeza que deseja deletar o usuário ${modoAtivo === 'email' ? val : '#' + val}? Esta ação não pode ser desfeita.`;
+// fechar confirmação
+function fecharConfirm() {
+    document.getElementById("confirm-overlay").style.display = "none";
+}
 
-      document.getElementById('main-form').style.display = 'none';
-      document.getElementById('confirm-overlay').classList.add('show');
-    }
+// executar delete
+async function executarDelete() {
+    const email = document.getElementById("inp-email").value.trim();
+    const id = document.getElementById("inp-id").value.trim();
 
-    function fecharConfirm() {
-      document.getElementById('confirm-overlay').classList.remove('show');
-      document.getElementById('main-form').style.display = '';
-    }
+    let dados = {};
 
-    async function executarDelete() {
-      fecharConfirm();
-
-      const body = new URLSearchParams();
-      if (modoAtivo === 'email') {
-        body.append('email', document.getElementById('inp-email').value.trim());
-      } else {
-        body.append('id', document.getElementById('inp-id').value.trim());
-      }
-
-      try {
-        const res  = await fetch('delete.php', { method: 'POST', body });
-        const data = await res.json();
-        mostrarFeedback(data.success, data.message);
-        if (data.success) {
-          document.getElementById('inp-email').value = '';
-          document.getElementById('inp-id').value    = '';
+    if (modo === "email") {
+        if (!email) {
+            mostrarFeedback("Digite um e-mail.");
+            return;
         }
-      } catch (e) {
-        mostrarFeedback(false, 'Erro ao conectar com o servidor.');
-      }
+        dados.email = email;
+    } else {
+        if (!id) {
+            mostrarFeedback("Digite um ID.");
+            return;
+        }
+        dados.id = id;
     }
 
-    function mostrarFeedback(ok, msg) {
-      const f = document.getElementById('feedback');
-      f.className  = 'feedback ' + (ok ? 'ok' : 'err');
-      f.textContent = msg;
+    try {
+        const response = await fetch("php/delete.php", {
+            method: "POST",
+            body: new URLSearchParams(dados)
+        });
+
+        const text = await response.text();
+        console.log(text); // 🔥 mostra erro real
+
+        const data = JSON.parse(text);
+
+        mostrarFeedback(data.message);
+
+        if (data.success) {
+            fecharConfirm();
+            document.getElementById("inp-email").value = "";
+            document.getElementById("inp-id").value = "";
+        }
+
+    } catch (error) {
+        console.error(error);
+        mostrarFeedback("Erro ao conectar ao servidor");
     }
+}
+
+// feedback na tela
+function mostrarFeedback(msg) {
+    document.getElementById("feedback").innerText = msg;
+}
