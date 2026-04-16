@@ -1,108 +1,68 @@
-const form        = document.getElementById('form');
-const cardForm    = document.getElementById('card-form');
-const cardSucesso = document.getElementById('card-sucesso');
-const mensagemEl  = document.getElementById('mensagem');
-const contador    = document.getElementById('contador');
-const btnVoltar   = document.getElementById('btn-voltar');
+const form = document.getElementById("form");
 
-// contador
-mensagemEl.addEventListener('input', () => {
-  contador.textContent = mensagemEl.value.length + '/250';
-});
+// PEGAR ID DA URL
+const params = new URLSearchParams(window.location.search);
+const idParam = params.get("id");
 
-// erro visual
-function setErro(id, msg) {
-  const campo = document.getElementById('campo-' + id);
-  const erro  = document.getElementById('erro-' + id);
+// CARREGAR DADOS
+if (idParam) {
+    fetch(`php/get.php?id=${idParam}`)
+        .then(res => res.json())
+        .then(data => {
+            if (!data.success) {
+                alert(data.message);
+                return;
+            }
 
-  campo.classList.remove('invalido', 'valido');
+            const user = data.data;
 
-  if (msg) {
-    campo.classList.add('invalido');
-    erro.textContent = msg;
-  } else {
-    erro.textContent = '';
-  }
+            document.getElementById("id").value = user.id;
+            document.getElementById("nome").value = user.nome;
+            document.getElementById("email").value = user.email;
+            document.getElementById("mensagem").value = user.mensagem;
+        });
+} else {
+    alert("ID não informado na URL");
 }
 
-// validação
-function validar() {
-  let ok = true;
+// UPDATE
+form.addEventListener("submit", async (e) => {
+    e.preventDefault();
 
-  const nome     = nomeEl.value.trim();
-  const email    = emailEl.value.trim();
-  const senha    = senhaEl.value;
-  const mensagem = mensagemEl.value.trim();
+    const id = document.getElementById("id").value;
+    const nome = document.getElementById("nome").value;
+    const email = document.getElementById("email").value;
+    const senha = document.getElementById("senha").value;
+    const mensagem = document.getElementById("mensagem").value;
 
-  if (!nome) { setErro('nome','Obrigatório'); ok=false; } else setErro('nome','');
+    try {
+        const response = await fetch("php/update.php", {
+            method: "POST",
+            body: new URLSearchParams({
+                id,
+                nome,
+                email,
+                senha,
+                mensagem
+            })
+        });
 
-  if (!email) { setErro('email','Obrigatório'); ok=false; } else setErro('email','');
+        const data = await response.json();
 
-  if (senha && senha.length < 6) {
-    setErro('senha','Mínimo 6 caracteres'); ok=false;
-  } else setErro('senha','');
+        if (!data.success) {
+            alert(data.message);
+            return;
+        }
 
-  if (!mensagem) { setErro('mensagem','Obrigatório'); ok=false; } else setErro('mensagem','');
+        document.getElementById("card-form").style.display = "none";
+        document.getElementById("card-sucesso").style.display = "block";
 
-  return ok;
-}
+        document.getElementById("res-nome").innerText = nome;
+        document.getElementById("res-email").innerText = email;
+        document.getElementById("res-mensagem").innerText = mensagem;
 
-// campos
-const nomeEl  = document.getElementById('nome');
-const emailEl = document.getElementById('email');
-const senhaEl = document.getElementById('senha');
-
-// submit update
-form.addEventListener('submit', async (e) => {
-  e.preventDefault();
-
-  if (!validar()) return;
-
-  const dados = new FormData(form);
-
-  const res = await fetch('php/update.php', {
-    method: 'POST',
-    body: dados
-  });
-
-  const json = await res.json();
-
-  if (json.success) {
-    document.getElementById('res-nome').textContent     = nomeEl.value;
-    document.getElementById('res-email').textContent    = emailEl.value;
-    document.getElementById('res-mensagem').textContent = mensagemEl.value;
-
-    cardForm.style.display = 'none';
-    cardSucesso.style.display = 'block';
-  } else {
-    alert(json.message);
-  }
+    } catch (error) {
+        console.error(error);
+        alert("Erro ao atualizar");
+    }
 });
-
-// voltar
-btnVoltar.addEventListener('click', () => {
-  cardSucesso.style.display = 'none';
-  cardForm.style.display = 'block';
-});
-
-// carregar por email
-async function carregarDados() {
-  const params = new URLSearchParams(window.location.search);
-  const email = params.get('email');
-
-  if (!email) return;
-
-  const res = await fetch('php/get.php?email=' + encodeURIComponent(email));
-  const json = await res.json();
-
-  if (json.success) {
-    document.getElementById('id').value        = json.data.id;
-    nomeEl.value                                = json.data.nome;
-    emailEl.value                               = json.data.email;
-    mensagemEl.value                            = json.data.mensagem;
-
-    contador.textContent = mensagemEl.value.length + '/250';
-  }
-}
-
-carregarDados();
