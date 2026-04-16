@@ -1,0 +1,163 @@
+ *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: system-ui, -apple-system, sans-serif;
+      background: #f4f4f2;
+      color: #1a1a18;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1.5rem;
+    }
+
+    .wrap { width: 100%; max-width: 460px; }
+
+    .card {
+      background: #fff;
+      border: 0.5px solid rgba(0,0,0,0.12);
+      border-radius: 12px;
+      padding: 1.75rem;
+    }
+
+    .page-title { font-size: 18px; font-weight: 500; margin-bottom: 4px; }
+    .page-sub { font-size: 13px; color: #666; margin-bottom: 1.5rem; }
+
+    .tabs {
+      display: flex;
+      gap: 4px;
+      background: #f0efea;
+      border-radius: 8px;
+      padding: 4px;
+      margin-bottom: 1.25rem;
+    }
+
+    .tab {
+      flex: 1;
+      padding: 7px;
+      border: none;
+      background: transparent;
+      border-radius: 6px;
+      font-size: 13px;
+      color: #666;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+
+    .tab.active {
+      background: #fff;
+      color: #1a1a18;
+      font-weight: 500;
+      border: 0.5px solid rgba(0,0,0,0.12);
+    }
+
+    .field { margin-bottom: 1rem; }
+
+    .field label {
+      display: block;
+      font-size: 13px;
+      color: #555;
+      margin-bottom: 6px;
+    }
+
+    .field input {
+      width: 100%;
+      padding: 9px 12px;
+      font-size: 14px;
+      border: 0.5px solid rgba(0,0,0,0.18);
+      border-radius: 8px;
+      outline: none;
+      background: #fff;
+      color: #1a1a18;
+      transition: border-color 0.15s;
+    }
+
+    .field input:focus { border-color: rgba(0,0,0,0.4); }
+
+    .btn-delete {
+      width: 100%;
+      margin-top: 0.5rem;
+      padding: 10px;
+      background: #fef0f0;
+      color: #a32d2d;
+      border: 0.5px solid #f09595;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: opacity 0.15s;
+    }
+
+    .btn-delete:hover { opacity: 0.8; }
+
+    .feedback {
+      margin-top: 1rem;
+      padding: 10px 12px;
+      border-radius: 8px;
+      font-size: 13px;
+      display: none;
+    }
+
+    .feedback.ok {
+      display: block;
+      background: #eaf3de;
+      color: #3b6d11;
+      border: 0.5px solid #97c459;
+    }
+
+    .feedback.err {
+      display: block;
+      background: #fef0f0;
+      color: #a32d2d;
+      border: 0.5px solid #f09595;
+    }
+
+    .confirm-overlay {
+      display: none;
+      min-height: 200px;
+      align-items: center;
+      justify-content: center;
+      background: rgba(0,0,0,0.45);
+      border-radius: 12px;
+      padding: 1rem;
+    }
+
+    .confirm-overlay.show { display: flex; }
+
+    .confirm-box {
+      background: #fff;
+      border: 0.5px solid rgba(0,0,0,0.12);
+      border-radius: 12px;
+      padding: 1.25rem;
+      max-width: 300px;
+      width: 100%;
+      text-align: center;
+    }
+
+    .confirm-box p { font-size: 14px; color: #1a1a18; margin-bottom: 1rem; line-height: 1.5; }
+
+    .confirm-actions { display: flex; gap: 8px; }
+
+    .confirm-actions button {
+      flex: 1;
+      padding: 8px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: opacity 0.15s;
+    }
+
+    .confirm-actions button:hover { opacity: 0.8; }
+
+    .btn-cancel {
+      background: #f0efea;
+      color: #555;
+      border: 0.5px solid rgba(0,0,0,0.12);
+    }
+
+    .btn-confirm {
+      background: #fef0f0;
+      color: #a32d2d;
+      border: 0.5px solid #f09595;
+    }
